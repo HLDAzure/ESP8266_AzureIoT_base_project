@@ -29,13 +29,18 @@
 
 static WiFiClientSecure sslClient; // for ESP8266
 static AzureIoTHubClient iotHubClient;
+IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
+
+/*String containing Hostname, Device Id & Device Key in the format:             */
+/*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"    */
+static const char* connectionString = "HostName=MQTTIoT.azure-devices.net;DeviceId=WeMos;SharedAccessKey=ypn7H369RPpYEuhmwAnOLs1FGxMoNh+uaMyJr+KgnHs=";
 
 void setup() {
     initSerial();
     initWifi();
     initTime();
 
-    iotHubClient.begin(sslClient);
+    initAzureIoT(MQTT_Protocol);
 }
 
 void loop() {
@@ -86,4 +91,8 @@ void initTime() {
             break;
         }
     }
+}
+
+void initAzureIoT(IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol) {
+    iotHubClient.begin(sslClient);
 }

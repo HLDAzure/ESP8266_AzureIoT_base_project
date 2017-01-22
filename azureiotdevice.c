@@ -145,15 +145,6 @@ void azureiotdevice_run(void)
             }
             else
             {
-#ifdef MBED_BUILD_TIMESTAMP
-                // For mbed add the certificate information
-                if (IoTHubClient_LL_SetOption(iotHubClientHandle, "TrustedCerts", certificates) != IOTHUB_CLIENT_OK)
-                {
-                    (void)printf("failure to set option \"TrustedCerts\"\r\n");
-                }
-#endif // MBED_BUILD_TIMESTAMP
-                
-
                 ContosoAnemometer* myWeather = CREATE_MODEL_INSTANCE(WeatherStation, ContosoAnemometer);
                 if (myWeather == NULL)
                 {
