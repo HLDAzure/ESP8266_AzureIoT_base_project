@@ -11,7 +11,7 @@ That does not mean that MQTT only works with the _LL APIs.
 Simply changing the using the convenience layer (functions not having _LL)
 and removing calls to _DoWork will yield the same results. */
 
-#include "AzureIoTHub.h"
+#include <AzureIoTHub.h>
 
 
 /*String containing Hostname, Device Id & Device Key in the format:             */
