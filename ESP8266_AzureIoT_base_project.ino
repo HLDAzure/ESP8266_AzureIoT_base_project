@@ -27,6 +27,15 @@
 #include <AzureIoTProtocol_MQTT.h>
 #include <AzureIoTProtocol_HTTP.h>
 
+//include one or more of the sensors below by uncommenting the corresponding #define statement
+//#define DUMMYSENSOR
+#define DHT11SENSOR
+//#define LIGHTSENSOR
+//#define PIRSENSOR
+//#define SWITCHSENSOR
+
+//then include the sensor code
+#include "iotsensors.h"
 
 static WiFiClientSecure sslClient; // for ESP8266
 static AzureIoTHubClient iotHubClient;
