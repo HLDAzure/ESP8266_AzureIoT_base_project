@@ -156,6 +156,8 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT receiveAzureIoTMessage(IOTHUB_MESSAGE_HA
         {
             memcpy(temp, buffer, size);
             temp[size] = '\0';
+            printf(temp);
+            return IOTHUBMESSAGE_ACCEPTED;
             EXECUTE_COMMAND_RESULT executeCommandResult = EXECUTE_COMMAND(userContextCallback, temp);
             result =
                 (executeCommandResult == EXECUTE_COMMAND_ERROR) ? IOTHUBMESSAGE_ABANDONED :
