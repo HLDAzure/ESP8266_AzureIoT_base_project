@@ -1,5 +1,3 @@
-
-
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -29,10 +27,14 @@
 
 //include one or more of the sensors below by uncommenting the corresponding #define statement
 //#define DUMMYSENSOR
-#define DHT11SENSOR
+//#define DHT11SENSOR
 //#define LIGHTSENSOR
 //#define PIRSENSOR
 //#define SWITCHSENSOR
+
+/*String containing Hostname, Device Id & Device Key in the format:             */
+/*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"    */
+static const char* connectionString = "HostName=MQTTIoT.azure-devices.net;DeviceId=WeMos;SharedAccessKey=ypn7H369RPpYEuhmwAnOLs1FGxMoNh+uaMyJr+KgnHs=";
 
 //then include the sensor code
 #include "iotsensors.h"
@@ -41,16 +43,14 @@ static WiFiClientSecure sslClient; // for ESP8266
 static AzureIoTHubClient iotHubClient;
 IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
 
-/*String containing Hostname, Device Id & Device Key in the format:             */
-/*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"    */
-static const char* connectionString = "HostName=MQTTIoT.azure-devices.net;DeviceId=WeMos;SharedAccessKey=ypn7H369RPpYEuhmwAnOLs1FGxMoNh+uaMyJr+KgnHs=";
 
-void setup() {
+void setup() {    
     initSerial();
     initWifi();
     initTime();
 
     initAzureIoT(HTTP_Protocol);
+    initIotSensors();
 }
 
 void loop() {
