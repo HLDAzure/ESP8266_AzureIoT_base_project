@@ -39,8 +39,8 @@ static const char* connectionString = "HostName=MQTTIoT.azure-devices.net;Device
 //then include the sensor code
 #include "iotsensors.h"
 
-static WiFiClientSecure sslClient; // for ESP8266
-static AzureIoTHubClient iotHubClient;
+WiFiClientSecure sslClient; // for ESP8266
+AzureIoTHubClient iotHubClient;
 IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
 
 
@@ -54,8 +54,7 @@ void setup() {
 }
 
 void loop() {
-  IoTHubClient_LL_DoWork(iotHubClientHandle);
-  ThreadAPI_Sleep(100);
+  updateSensors();
 }
 
 void initSerial() {
@@ -118,62 +117,4 @@ void initAzureIoT(IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol) {
     }  
 }
 
-static void sendAzureIoTMessage(IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle, const unsigned char* buffer, size_t size) {
-    static unsigned int messageTrackingId;
-    IOTHUB_MESSAGE_HANDLE messageHandle = IoTHubMessage_CreateFromByteArray(buffer, size);
-    if (messageHandle == NULL) {
-        printf("unable to create a new IoTHubMessage\r\n");
-    } else {
-        if (IoTHubClient_LL_SendEventAsync(iotHubClientHandle, messageHandle, sendAzureIoTCallback, (void*)(uintptr_t)messageTrackingId) != IOTHUB_CLIENT_OK) {
-            printf("failed to hand over the message to IoTHubClient");
-        } else {
-            printf("IoTHubClient accepted the message for delivery\r\n");
-        }
-        IoTHubMessage_Destroy(messageHandle);
-    }
-    free((void*)buffer);
-    messageTrackingId++;
-}
 
-static void sendAzureIoTCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result, void* userContextCallback) {
-    unsigned int messageTrackingId = (unsigned int)(uintptr_t)userContextCallback;
-    (void)printf("Message Id: %u Received.\r\n", messageTrackingId);
-    (void)printf("Result Call Back Called! Result is: %s \r\n", ENUM_TO_STRING(IOTHUB_CLIENT_CONFIRMATION_RESULT, result));
-}
-
-/*this function "links" IoTHub to the serialization library*/
-static IOTHUBMESSAGE_DISPOSITION_RESULT receiveAzureIoTMessage(IOTHUB_MESSAGE_HANDLE message, void* userContextCallback)
-{
-    IOTHUBMESSAGE_DISPOSITION_RESULT result;
-    const unsigned char* buffer;
-    size_t size;
-    if (IoTHubMessage_GetByteArray(message, &buffer, &size) != IOTHUB_MESSAGE_OK)
-    {
-        printf("unable to IoTHubMessage_GetByteArray\r\n");
-        result = IOTHUBMESSAGE_ABANDONED;
-    }
-    else
-    {
-        /*buffer is not zero terminated*/
-        char* temp = (char*) malloc(size + 1);
-        if (temp == NULL)
-        {
-            printf("failed to malloc\r\n");
-            result = IOTHUBMESSAGE_ABANDONED;
-        }
-        else
-        {
-            memcpy(temp, buffer, size);
-            temp[size] = '\0';
-            printf(temp);
-            return IOTHUBMESSAGE_ACCEPTED;
-            EXECUTE_COMMAND_RESULT executeCommandResult = EXECUTE_COMMAND(userContextCallback, temp);
-            result =
-                (executeCommandResult == EXECUTE_COMMAND_ERROR) ? IOTHUBMESSAGE_ABANDONED :
-                (executeCommandResult == EXECUTE_COMMAND_SUCCESS) ? IOTHUBMESSAGE_ACCEPTED :
-                IOTHUBMESSAGE_REJECTED;
-            free(temp);
-        }
-    }
-    return result;
-}
