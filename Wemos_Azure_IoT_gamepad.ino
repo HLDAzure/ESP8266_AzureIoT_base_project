@@ -13,17 +13,18 @@
 #include <WiFiClientSecure.h>
 #include <WiFiUdp.h>
 
+
 #include <ESP8266mDNS.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h> 
 #include <ArduinoOTA.h>
 
-#include <AzureIoTHub.h>
-#include <AzureIoTHubClient.h>
-#include <AzureIoTUtility.h>
-#include <AzureIoTProtocol_MQTT.h>
-#include <AzureIoTProtocol_HTTP.h>
+//#include <AzureIoTHub.h>
+//#include <AzureIoTHubClient.h>
+//#include <AzureIoTUtility.h>
+//#include <AzureIoTProtocol_MQTT.h>
+//#include <AzureIoTProtocol_HTTP.h>
 
 //include one or more of the sensors below by uncommenting the corresponding #define statement
 //#define DUMMYSENSOR
@@ -37,24 +38,29 @@
 static const char* connectionString = "HostName=MQTTIoT.azure-devices.net;DeviceId=WeMos;SharedAccessKey=ypn7H369RPpYEuhmwAnOLs1FGxMoNh+uaMyJr+KgnHs=";
 
 //then include the sensor code
-#include "iotsensors.h"
+//#include "iotsensors.h"
+#include "gamepad.h"
 
-WiFiClientSecure sslClient; // for ESP8266
-AzureIoTHubClient iotHubClient;
-IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
+//WiFiClientSecure sslClient; // for ESP8266
+//AzureIoTHubClient iotHubClient;
+//IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle;
 
 
 void setup() {    
     initSerial();
     initWifi();
     initTime();
+    initGamepad();
 
-    initAzureIoT(HTTP_Protocol);
-    initIotSensors();
+    //initAzureIoT(HTTP_Protocol);
+    //initIotSensors();
 }
 
 void loop() {
-  updateSensors();
+  //updateSensors();
+
+  updateButtons();
+
 }
 
 void initSerial() {
@@ -103,6 +109,7 @@ void initTime() {
     }
 }
 
+/*
 void initAzureIoT(IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol) {
     iotHubClient.begin(sslClient);
     serializer_init(NULL);
@@ -116,5 +123,5 @@ void initAzureIoT(IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol) {
       sendAzureIoTMessage(iotHubClientHandle, (const unsigned char*)message, sizeof(message));
     }  
 }
-
+*/
 
