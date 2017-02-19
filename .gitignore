@@ -21,6 +21,8 @@ $RECYCLE.BIN/
 # Operating System Files
 # =========================
 .vscode
+.vs
+__vm
 
 # OSX
 # =========================

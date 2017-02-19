@@ -7,6 +7,11 @@
 #include <time.h>
 #include <sys/time.h>
 #include <SPI.h>
+#include <NeoPixelBus.h>
+#include <NeoPixelAnimator.h>
+#include <NeoPixelBrightnessBus.h>
+
+
 
 #include <ESP8266WiFi.h>
 
@@ -35,7 +40,7 @@
 
 /*String containing Hostname, Device Id & Device Key in the format:             */
 /*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"    */
-static const char* connectionString = "HostName=MQTTIoT.azure-devices.net;DeviceId=WeMos;SharedAccessKey=ypn7H369RPpYEuhmwAnOLs1FGxMoNh+uaMyJr+KgnHs=";
+//static const char* connectionString = "HostName=MQTTIoT.azure-devices.net;DeviceId=WeMos;SharedAccessKey=ypn7H369RPpYEuhmwAnOLs1FGxMoNh+uaMyJr+KgnHs=";
 
 //then include the sensor code
 //#include "iotsensors.h"
@@ -48,8 +53,8 @@ static const char* connectionString = "HostName=MQTTIoT.azure-devices.net;Device
 
 void setup() {    
     initSerial();
-    initWifi();
-    initTime();
+    //initWifi();
+    //initTime();
     initGamepad();
 
     //initAzureIoT(HTTP_Protocol);
@@ -57,10 +62,16 @@ void setup() {
 }
 
 void loop() {
-  //updateSensors();
+	//read all the sensors and switches from the gamepad
+	readGamepad();
 
-  updateButtons();
+	//check and change any settings, etc.
+  int light = readLightSensor();
 
+  Serial.println(light);
+  delay(500);
+	//output and updates to the gamepad such as the LED grid
+	updateGamepad();
 }
 
 void initSerial() {
@@ -75,13 +86,13 @@ void initWifi() {
     //Local intialization. Once its business is done, there is no need to keep it around
     WiFiManager wifiManager;
     //reset saved settings
-    //wifiManager.resetSettings();
+    wifiManager.resetSettings();
 
         //fetches ssid and pass from eeprom and tries to connect
     //if it does not connect it starts an access point with the specified name
     //here  "AutoConnectAP"
     //and goes into a blocking loop awaiting configuration
-    wifiManager.autoConnect("AutoConnectAP");
+    //wifiManager.autoConnect("AutoConnectAP");
     //or use this for auto generated name ESP + ChipID
     //wifiManager.autoConnect();
 
